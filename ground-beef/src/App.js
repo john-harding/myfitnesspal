@@ -33,9 +33,11 @@ class App extends Component {
     const groundBeefGperServing = 113.39;
     const normalPasta = 150;
     const normalGroundBeef = 100;
+    const today = new Date();
+    const expires = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14);
 
     const value = event.target.id === 'ground_beef_initial' ? event.target.value * 453.592 : event.target.value;
-    cookies.set(event.target.id, value /*, { path: '/' }*/ );
+    cookies.set(event.target.id, value, { expires } /*, { path: '/' }*/ );
 
     this.setState({[event.target.id]: value}, () => {
       this.setState({ firstMeal: {
@@ -43,7 +45,7 @@ class App extends Component {
           groundBeef: this.roundDecimal(this.firstMeal(this.state, 'ground_beef') / groundBeefGperServing),
         }
       }, () => {
-        cookies.set('firstMeal', this.state.firstMeal /*, { path: '/' }*/ );
+        cookies.set('firstMeal', this.state.firstMeal, { expires } /*, { path: '/' }*/ );
 
         const adjustedPenne = +this.state['penne_cold'] / (+this.state['penne_eating'] / +this.state['penne_after']);
         const adjustedGroundBeef = +this.state['ground_beef_cold'] / (+this.state['ground_beef_eating'] / +this.state['ground_beef_after']);
@@ -53,7 +55,7 @@ class App extends Component {
             groundBeef: this.roundDecimal(this.calculateMeal(this.state.ground_beef_initial, adjustedGroundBeef, normalGroundBeef) / groundBeefGperServing),
           }
         }, () => {
-          cookies.set('normalMeal', this.state.normalMeal /*, { path: '/' }*/ );
+          cookies.set('normalMeal', this.state.normalMeal, { expires } /*, { path: '/' }*/ );
 
           this.setState({ thisMeal: {
               pasta: this.roundDecimal(this.calculateMeal(this.state.penne_initial, adjustedPenne, +this.state.penne_this) / penneGperServing),
